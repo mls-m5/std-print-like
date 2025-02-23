@@ -70,3 +70,11 @@ template <typename... Args>
 void print(FormatString<sizeof...(Args)> str, Args &&...args) {
     str.print(std::cout, args...);
 }
+
+/// Create a string from arguments with '{}' syntax
+template <typename... Args>
+std::string format(FormatString<sizeof...(Args)> str, Args &&...args) {
+    auto ss = std::ostringstream{};
+    str.print(ss, args...);
+    return ss.str();
+}

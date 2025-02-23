@@ -6,8 +6,7 @@ int main(int argc, char *argv[]) {
     print("hello {} you\n", "there");
 
     auto str = format("hello {} you\n", "there");
-
-    std::cout << str << "\n";
+    print("{}", str);
 
     return 0;
 }
