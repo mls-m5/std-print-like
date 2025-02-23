@@ -4,14 +4,16 @@
 
 #include <array>
 #include <iostream>
+#include <ostream>
 #include <ranges>
+#include <sstream>
 #include <string_view>
 
-template <int NumArgs>
+template <size_t NumArgs>
 struct FormatString {
     constexpr void place() {
-        int count = 0;
-        int prev = 0;
+        size_t count = 0;
+        size_t prev = 0;
         for (auto i : std::ranges::iota_view{0uz, data.size()}) {
             auto c = data[i];
             if (c == '{') {
@@ -35,7 +37,7 @@ struct FormatString {
         parts.at(count).len = data.size() - prev;
     }
 
-    template <int N>
+    template <size_t N>
     consteval FormatString(const char (&str)[N])
         : data{&str[0], N - 1} {
         place();
@@ -50,23 +52,21 @@ struct FormatString {
 
     std::array<Part, NumArgs + 1> parts;
 
-    constexpr std::string_view at(int i) {
+    constexpr std::string_view at(size_t i) {
         auto part = parts.at(i);
         return data.substr(part.start, part.len);
     }
 
     template <typename... Args>
-    void print(Args &&...args) {
-        int current = 0;
-
-        ((std::cout << at(current) << args), ...);
-
-        std::cout << at(parts.size() - 1);
+    void print(std::ostream &stream, Args &&...args) {
+        size_t current = 0;
+        ((stream << at(current) << args), ...);
+        stream << at(parts.size() - 1);
     }
 };
 
 /// Print a string and insert the argument at the places where '{}' is found
 template <typename... Args>
 void print(FormatString<sizeof...(Args)> str, Args &&...args) {
-    str.print(args...);
+    str.print(std::cout, args...);
 }
