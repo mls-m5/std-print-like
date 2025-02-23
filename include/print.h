@@ -60,7 +60,7 @@ struct FormatString {
     template <typename... Args>
     void print(std::ostream &stream, Args &&...args) {
         size_t current = 0;
-        ((stream << at(current) << args), ...);
+        ((stream << at(current++) << args), ...);
         stream << at(parts.size() - 1);
     }
 };
