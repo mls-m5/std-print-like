@@ -23,5 +23,11 @@ target_link_libraries(
     ${CMAKE_THREAD_LIBS_INIT}
     )
 
+target_include_directories(
+    format-like
+    PRIVATE
+    include
+)
+
 add_subdirectory(test)
 
