@@ -8,5 +8,7 @@ int main(int argc, char *argv[]) {
     auto str = format("hello {} you\n", "there");
     print("{}", str);
 
+    print("x: {}, y: {}\n", 10, 20);
+
     return 0;
 }
