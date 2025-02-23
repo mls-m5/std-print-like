@@ -1,6 +1,4 @@
-#include <algorithm>
 #include <array>
-#include <format>
 #include <iostream>
 #include <ranges>
 #include <string_view>
@@ -19,13 +17,22 @@ struct FormatString {
                 prev = i + 2;
             }
         }
+
+        // This runs at compile time so we just want the compiler to stop and
+        // print a message
+        if (count < NumArgs) {
+            throw "to many argument to format or print function";
+        }
+        if (count > NumArgs) {
+            throw "to few argument to format or print function";
+        }
+
         parts.at(count).start = prev;
         parts.at(count).len = data.size() - prev;
     }
 
     template <int N>
-    constexpr FormatString(const char (&str)[N])
-        // constexpr FormatString(const char str[N])
+    consteval FormatString(const char (&str)[N])
         : data{&str[0], N - 1} {
         place();
     }
@@ -54,20 +61,14 @@ struct FormatString {
     }
 };
 
+/// Print a string and insert the argument at the places where '{}' is found
 template <typename... Args>
 void print(FormatString<sizeof...(Args)> str, Args &&...args) {
-    // for (auto &part : str.parts) {
-    //     std::cout << part.start << " -> " << part.len << " = '"
-    //               << str.data.substr(part.start, part.len) << "'\n";
-    // }
-
     str.print(args...);
 }
 
 int main(int argc, char *argv[]) {
     print("hello {} you\n", "there");
-
-    auto str = std::format("hello {}", "there");
 
     return 0;
 }
